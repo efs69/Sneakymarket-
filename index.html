@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sneakylinks — Hostels & Gadgets</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-light: #f8fafc;
+      --bg-dark: #1a1a1a;
+      --card-light: #ffffff;
+      --card-dark: #2a2a2a;
+      --text-light: #0b2440;
+      --text-dark: #f5f5f5;
+      --primary: #0f6b8a;
+      --accent: #1fb28a;
+      --muted-light: #64748b;
+      --muted-dark: #9ca3af;
+      --radius: 12px;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: var(--bg-light);
+      color: var(--text-light);
+      transition: background 0.3s, color 0.3s;
+    }
+    body.dark {
+      background: var(--bg-dark);
+      color: var(--text-dark);
+    }
+
+    /* Header */
+    .topbar {
+      position: sticky; top: 0; z-index: 1000;
+      background: var(--primary);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 10px 20px;
+    }
+    .brand { display:flex; align-items:center; gap:10px; color:#fff; text-decoration:none }
+    .brand-logo { width:42px; height:42px; border-radius:50%; background:linear-gradient(135deg,#0f6b8a,#1fb28a); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:18px; color:#fff; }
+    .brand h1 { margin:0; font-size:18px; }
+
+    .nav-actions { display:flex; gap:12px; align-items:center; }
+    .cta { background:var(--accent); border:none; border-radius:10px; padding:8px 14px; font-weight:600; cursor:pointer; color:#fff; }
+    #themeToggle { background:transparent; border:1px solid rgba(255,255,255,0.4); color:#fff; border-radius:50%; width:36px; height:36px; cursor:pointer; }
+
+    /* Hero */
+    .hero {
+      background: url('https://via.placeholder.com/1600x500?text=Sneakylinks+Marketplace') center/cover no-repeat;
+      position:relative; text-align:center; padding:80px 20px;
+      color:#fff;
+    }
+    .hero::after {
+      content:""; position:absolute; inset:0;
+      background:rgba(0,0,0,0.55);
+    }
+    .hero-content { position:relative; max-width:800px; margin:auto; }
+    .hero-content h2 { font-size:32px; margin-bottom:12px; }
+    .hero-content p { font-size:16px; margin-bottom:20px; }
+    .hero-actions { display:flex; gap:10px; justify-content:center; }
+    .btn-primary { background:var(--primary); color:#fff; border:none; border-radius:var(--radius); padding:12px 16px; cursor:pointer; font-weight:600; }
+
+    /* Controls */
+    .controls { max-width:1100px; margin:20px auto; display:flex; justify-content:space-between; padding:0 20px; flex-wrap:wrap; gap:10px; }
+    .tabs { display:flex; gap:8px; }
+    .tab { padding:8px 12px; border-radius:10px; cursor:pointer; font-weight:600; border:1px solid transparent; }
+    .tab.active { background:var(--primary); color:#fff; }
+
+    .search { display:flex; gap:8px; }
+    .search input { padding:10px; border-radius:10px; border:1px solid #ccc; min-width:220px; }
+
+    /* Grid */
+    .grid { max-width:1100px; margin:auto; display:grid; grid-template-columns:repeat(auto-fill,minmax(250px,1fr)); gap:20px; padding:0 20px; }
+    .product { background:var(--card-light); border-radius:12px; overflow:hidden; box-shadow:0 4px 12px rgba(0,0,0,0.08); transition:transform .2s; display:flex; flex-direction:column; }
+    body.dark .product { background:var(--card-dark); }
+    .product:hover { transform:translateY(-5px); }
+    .product img { width:100%; height:180px; object-fit:cover; cursor:pointer; }
+    .meta { padding:12px; flex:1; display:flex; flex-direction:column; }
+    .title { font-weight:700; font-size:16px; }
+    .spec { font-size:14px; color:var(--muted-light); margin-top:6px; }
+    body.dark .spec { color:var(--muted-dark); }
+    .bottom { margin-top:auto; display:flex; justify-content:space-between; align-items:center; }
+    .price { font-weight:700; color:var(--primary); }
+    .actions { display:flex; gap:8px; margin-top:10px; }
+    .btn-secondary { padding:6px 10px; border-radius:8px; border:1px solid #ccc; cursor:pointer; background:#fff; color:var(--primary); font-weight:600; }
+    .book-btn { background:var(--accent); color:#fff; border:none; border-radius:8px; padding:6px 10px; font-weight:600; cursor:pointer; }
+
+    /* Modal */
+    .overlay { position:fixed; inset:0; display:none; align-items:center; justify-content:center; background:rgba(0,0,0,0.7); z-index:2000; }
+    .modal { background:var(--card-light); padding:20px; border-radius:12px; max-width:400px; width:90%; position:relative; }
+    body.dark .modal { background:var(--card-dark); }
+    .close { position:absolute; top:10px; right:10px; font-size:20px; cursor:pointer; background:#ff4d4d; color:#fff; border:none; border-radius:50%; width:28px; height:28px; display:flex; align-items:center; justify-content:center; }
+
+    /* Request Form */
+    .request-section { max-width:800px; margin:40px auto; padding:20px; background:var(--card-light); border-radius:12px; }
+    body.dark .request-section { background:var(--card-dark); }
+    .request-section h3 { margin-top:0; }
+    .request-section input, .request-section textarea, .request-section select { width:100%; padding:10px; border-radius:8px; margin-top:8px; border:1px solid #ccc; }
+    .request-section button { margin-top:12px; padding:10px; border:none; border-radius:8px; background:var(--primary); color:#fff; font-weight:600; cursor:pointer; }
+  </style>
+</head>
+<body>
+
+  <div class="topbar">
+    <a href="#" class="brand" id="logo">
+      <div class="brand-logo">SL</div>
+      <h1>Sneakylinks</h1>
+    </a>
+    <div class="nav-actions">
+      <button class="cta" onclick="scrollToSection('hostels')">Hostels</button>
+      <button class="cta" onclick="scrollToSection('gadgets')">Gadgets</button>
+      <button id="themeToggle">🌓</button>
+    </div>
+  </div>
+
+  <div class="hero">
+    <div class="hero-content">
+      <h2>Comfortable Stays & Trusted Gadgets</h2>
+      <p>Browse curated hostels and gadgets. Book instantly via WhatsApp.</p>
+      <div class="hero-actions">
+        <button class="btn-primary" onclick="scrollToSection('products')">Shop Now</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Controls -->
+  <div class="controls">
+    <div class="tabs">
+      <button class="tab active" data-filter="all" onclick="setTab(this)">All</button>
+      <button class="tab" data-filter="hostel" onclick="setTab(this)">Hostels</button>
+      <button class="tab" data-filter="gadget" onclick="setTab(this)">Gadgets</button>
+    </div>
+    <div class="search">
+      <input type="search" id="searchInput" placeholder="Search hostels or gadgets" oninput="applyFilters()" />
+      <button class="btn-secondary" onclick="clearSearch()">Clear</button>
+    </div>
+  </div>
+
+  <!-- Product Grid -->
+  <section id="products">
+    <div class="grid" id="productGrid"></div>
+  </section>
+
+  <!-- Booking Modal -->
+  <div class="overlay" id="bookingOverlay">
+    <div class="modal">
+      <button class="close" onclick="closeBookingModal()">×</button>
+      <h3 id="modalTitle"></h3>
+      <p id="modalPrice"></p>
+      <form id="bookingForm">
+        <input type="text" id="customerName" placeholder="Your Name" required />
+        <input type="text" id="customerLocation" placeholder="Your Location" required />
+        <input type="tel" id="customerPhone" placeholder="Phone Number" required />
+        <label for="whatsappNumber">Choose WhatsApp Number</label>
+        <select id="whatsappNumber" required>
+          <option value="">Select</option>
+          <option value="0597053192">0597053192</option>
+          <option value="0594708232">0594708232</option>
+          <option value="0594438054">0594438054</option>
+        </select>
+        <button type="submit">Send Booking</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Request Section -->
+  <div class="request-section" id="request">
+    <h3>Request a Product</h3>
+    <form id="requestForm">
+      <input type="text" id="reqName" placeholder="Your Name" required />
+      <input type="text" id="reqLocation" placeholder="Your Location" required />
+      <input type="tel" id="reqPhone" placeholder="Phone Number" required />
+      <textarea id="reqDetails" placeholder="Describe the product you want" required></textarea>
+      <label for="reqWhatsapp">Send to WhatsApp</label>
+      <select id="reqWhatsapp" required>
+        <option value="">Select</option>
+        <option value="0597053192">0597053192</option>
+        <option value="0594708232">0594708232</option>
+        <option value="0594438054">0594438054</option>
+      </select>
+      <button type="submit">Send Request</button>
+    </form>
+  </div>
+
+  <footer style="text-align:center;padding:20px;color:gray">© Sneakylinks Marketplace</footer>
+
+<script>
+  const productGrid = document.getElementById('productGrid');
+  let items = [];
+  for(let i=1;i<=15;i++){ items.push({type:'hostel',name:'Hostel '+i,spec:'Spec details',price:'GH₵ '+(800+i*50)+'/month'}); }
+  for(let i=1;i<=15;i++){ items.push({type:'gadget',name:'Gadget '+i,spec:'Spec details',price:'GH₵ '+(500+i*100)}); }
+  items.forEach(item=>{
+    const card=document.createElement('div');
+    card.className='product';
+    card.dataset.type=item.type;
+    card.dataset.name=item.name;
+    card.dataset.price=item.price;
+    card.innerHTML=`
+      <img src="https://via.placeholder.com/600x400?text=${item.name}" alt="${item.name}" onclick="openImageModal('${item.name}','${item.price}')">
+      <div class="meta">
+        <div class="title">${item.name}</div>
+        <div class="spec">${item.spec}</div>
+        <div class="bottom">
+          <div class="price">${item.price}</div>
+          <div class="actions">
+            <button class="btn-secondary" style="background:#0f6b8a;color:#fff" onclick="openImageModal('${item.name}','${item.price}')">View</button>
+            <button class="book-btn" onclick="openBookingModal('${item.name}','${item.price}')">Book</button>
+          </div>
+        </div>
+      </div>`;
+    productGrid.appendChild(card);
+  });
+
+  let activeFilter='all';
+  function setTab(btn){ document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active')); btn.classList.add('active'); activeFilter=btn.dataset.filter; applyFilters(); }
+  function applyFilters(){ const q=document.getElementById('searchInput').value.toLowerCase(); document.querySelectorAll('.product').forEach(card=>{ const type=card.dataset.type; const name=card.dataset.name.toLowerCase(); const price=card.dataset.price.toLowerCase(); let show=true; if(activeFilter!=='all'&&type!==activeFilter) show=false; if(q && !(name.includes(q)||price.includes(q))) show=false; card.style.display=show?'flex':'none'; }); }
+  function clearSearch(){ document.getElementById('searchInput').value=''; applyFilters(); }
+  function scrollToSection(id){ document.getElementById(id).scrollIntoView({behavior:'smooth'}); }
+
+  function openBookingModal(name,price){ document.getElementById('modalTitle').textContent=name; document.getElementById('modalPrice').textContent=price; document.getElementById('bookingOverlay').style.display='flex'; }
+  function closeBookingModal(){ document.getElementById('bookingOverlay').style.display='none'; }
+
+  document.getElementById('bookingForm').addEventListener('submit',e=>{ e.preventDefault(); const product=document.getElementById('modalTitle').textContent; const price=document.getElementById('modalPrice').textContent; const name=document.getElementById('customerName').value; const location=document.getElementById('customerLocation').value; const phone=document.getElementById('customerPhone').value; const whatsapp=document.getElementById('whatsappNumber').value; const message=`Booking:%0AProduct: ${product}%0APrice: ${price}%0AName: ${name}%0ALocation: ${location}%0APhone: ${phone}`; const wa='233'+whatsapp.slice(1); window.open(`https://wa.me/${wa}?text=${message}`,'_blank'); });
+
+  document.getElementById('requestForm').addEventListener('submit',e=>{ e.preventDefault(); const name=document.getElementById('reqName').value; const location=document.getElementById('reqLocation').value; const phone=document.getElementById('reqPhone').value; const details=document.getElementById('reqDetails').value; const whatsapp=document.getElementById('reqWhatsapp').value; const message=`Request:%0AName: ${name}%0ALocation: ${location}%0APhone: ${phone}%0AProduct: ${details}`; const wa='233'+whatsapp.slice(1); window.open(`https://wa.me/${wa}?text=${message}`,'_blank'); });
+
+  document.getElementById('themeToggle').addEventListener('click',()=>{ document.body.classList.toggle('dark'); });
+</script>
+</body>
+</html>
